@@ -400,3 +400,42 @@ $(document).ready(function() {
 JS;
 $this->registerJs($script);
 ?>
+<?php
+$script = <<<JS
+$(document).ready(function() {
+    // Обработчик клика по кнопке "Добавить в избранное"
+    $('.btn-favorite').click(function() {
+        var btn = $(this);
+        var url = btn.data('url');
+        var bookId = btn.data('id');
+        
+        // Отправляем AJAX-запрос на сервер
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { id: bookId },
+            success: function(response) {
+                if (response.success) {
+                    // Обновляем состояние кнопки
+                    if (response.is_favorite) {
+                        btn.addClass('active');
+                        btn.find('i').removeClass('fa-heart-o').addClass('fa-heart');
+                        btn.find('span').text('Убрать из избранного');
+                    } else {
+                        btn.removeClass('active');
+                        btn.find('i').removeClass('fa-heart').addClass('fa-heart-o');
+                        btn.find('span').text('Добавить в избранное');
+                    }
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Произошла ошибка при обработке запроса');
+            }
+        });
+    });
+});
+JS;
+$this->registerJs($script);
+?>
